@@ -16,7 +16,7 @@ public class SentryLogger: NSObject, DDLogger {
     if let dsnString = dsn {
       SentrySDK.start { options in
         options.dsn = dsnString
-        options.attachStacktrace = attachStacktrace ? 1 : 0
+        options.attachStacktrace = attachStacktrace
         DDLogInfo("Initializing the Sentry SDK")
       }
     }
@@ -70,7 +70,7 @@ public class SentryLogger: NSObject, DDLogger {
           context["logger context"] = toContextMap(message: message)
           event.context = context
           // TODO: Add log support to logEntry
-          event.message = formatted
+          event.message = SentryMessage(formatted: formatted)
           event.level = sentryLevel
           SentrySDK.capture(event: event)
         }
@@ -81,7 +81,7 @@ public class SentryLogger: NSObject, DDLogger {
           crumb.message = formatted
           crumb.level = sentryLevel
           crumb.category = "CocoaLumberjack"
-          SentrySDK.addBreadcrumb(crumb: crumb)
+          SentrySDK.addBreadcrumb(crumb)
         }
       }
     }
